@@ -179,15 +179,10 @@ impl Node {
     pub fn eval_set(&self, variables: &Valuation<Set>, global: &Set) -> Result<Set, &'static str> {
         match &self {
             Node::Var(c) => Ok(variables.get(c).ok_or("Unknown variable")?.clone()),
-            Node::Unary(Operator::NEG, next) => {
-                println!("what the heck");
-                Ok(next.eval_set(variables, global)? ^ global)
-            }
+            Node::Unary(Operator::NEG, next) => Ok(next.eval_set(variables, global)? ^ global),
             Node::Binary(lhs, op, rhs) => {
                 let l = lhs.eval_set(variables, global)?;
                 let r = rhs.eval_set(variables, global)?;
-                println!("a: {l:?}");
-                println!("b: {r:?}");
                 match op {
                     Operator::AND => Ok(l & &r),
                     Operator::OR => Ok(l | &r),
